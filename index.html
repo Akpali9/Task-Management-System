@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ChronoTask - Beautiful task manager with timer functionality. Organize tasks, set alarms, and track time for maximum productivity.">
+    <meta name="keywords" content="task manager, productivity app, time management, pomodoro timer, to-do list, alarm clock">
+    <meta name="author" content="ChronoTask Productivity">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="ChronoTask - Beautiful Timer Task Manager">
+    <meta property="og:description" content="Organize your tasks, set alarms, and track time with our beautiful productivity app.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chronotask.example.com">
+    <link rel="canonical" href="https://chronotask.example.com">
+    <title>ChronoTask - Beautiful Timer Task Manager | Boost Productivity</title>
+ <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="notification-container" id="notification-container">
+        <!-- Notifications will be inserted here -->
+    </div>
+
+    <div class="offline-indicator" id="offline-indicator">
+        <i class="fas fa-wifi-slash"></i>
+        <span>You are currently offline. Working in offline mode.</span>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal-overlay" id="edit-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-edit"></i> Edit Task</h3>
+                <button class="modal-close" id="close-edit-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="edit-task-text">Task Description</label>
+                    <input type="text" id="edit-task-text" class="form-control" placeholder="Enter task description">
+                </div>
+                <div class="form-group">
+                    <label for="edit-task-category">Category</label>
+                    <select id="edit-task-category" class="form-control">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-task-priority">Priority</label>
+                    <select id="edit-task-priority" class="form-control">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancel-edit">Cancel</button>
+                <button class="btn btn-primary" id="save-task">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alarm Modal -->
+    <div class="modal-overlay" id="alarm-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-bell"></i> Set Alarm</h3>
+                <button class="modal-close" id="close-alarm-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="alarm-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Alarm Time</label>
+                    <div class="time-input-group">
+                        <input type="time" id="alarm-time-input" class="form-control time-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Quick Select</label>
+                    <div class="time-picker">
+                        <div class="time-option" data-time="07:00">7:00 AM</div>
+                        <div class="time-option" data-time="09:00">9:00 AM</div>
+                        <div class="time-option" data-time="12:00">12:00 PM</div>
+                        <div class="time-option" data-time="15:00">3:00 PM</div>
+                        <div class="time-option" data-time="17:00">5:00 PM</div>
+                        <div class="time-option" data-time="19:00">7:00 PM</div>
+                        <div class="time-option" data-time="21:00">9:00 PM</div>
+                        <div class="time-option" data-time="23:00">11:00 PM</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Alarm Sound</label>
+                    <div class="sound-options">
+                        <div class="sound-option active" data-sound="bell">
+                            <i class="fas fa-bell"></i>
+                            <div>Classic Bell</div>
+                        </div>
+                        <div class="sound-option" data-sound="chime">
+                            <i class="fas fa-music"></i>
+                            <div>Gentle Chime</div>
+                        </div>
+                        <div class="sound-option" data-sound="beep">
+                            <i class="fas fa-wave-square"></i>
+                            <div>Digital Beep</div>
+                        </div>
+                        <div class="sound-option" data-sound="notification">
+                            <i class="fas fa-comment-alt"></i>
+                            <div>Notification</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancel-alarm">Cancel</button>
+                <button class="btn btn-purple" id="set-alarm"><i class="fas fa-bell"></i> Set Alarm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-clock"></i>
+                <h1>ChronoTask
+                    <div class="timer-display" id="timer-display">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="timer-value">00:00:00</span>
+                    </div>
+                </h1>
+            </div>
+            <div class="header-controls">
+                <div class="clock-container">
+                    <div class="clock-time" id="clock-time">00:00:00</div>
+                    <div class="clock-date" id="clock-date">Monday, January 1</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-tasks">0</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="completed-tasks">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="pending-tasks">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="timer-controls">
+            <button class="btn btn-teal" id="timer-start">
+                <i class="fas fa-play"></i> Start Timer
+            </button>
+            <button class="btn btn-warning" id="timer-pause" disabled>
+                <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="btn btn-danger" id="timer-reset" disabled>
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-folder"></i> Categories</h2>
+                <div class="category-list">
+                    <div class="category-item category-all active" data-category="all">
+                        <div class="category-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="category-name">All Tasks</div>
+                    </div>
+                    <div class="category-item category-work" data-category="work">
+                        <div class="category-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="category-name">Work</div>
+                    </div>
+                    <div class="category-item category-personal" data-category="personal">
+                        <div class="category-icon"><i class="fas fa-user"></i></div>
+                        <div class="category-name">Personal</div>
+                    </div>
+                    <div class="category-item category-shopping" data-category="shopping">
+                        <div class="category-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="category-name">Shopping</div>
+                    </div>
+                    <div class="category-item category-health" data-category="health">
+                        <div class="category-icon"><i class="fas fa-heartbeat"></i></div>
+                        <div class="category-name">Health</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block" id="add-category-btn">
+                    <i class="fas fa-plus"></i> Add Category
+                </button>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-list-check"></i> Task Manager</h2>
+                
+                <div class="task-form">
+                    <input type="text" class="task-input" id="new-task-input" placeholder="Add a new task...">
+                    <select class="category-select" id="task-category-select">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <select class="priority-select" id="task-priority-select">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <input type="time" class="alarm-input" id="task-alarm-input">
+                    <button class="btn btn-primary" id="add-task-btn">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </div>
+                
+                <div class="task-filters">
+                    <button class="filter-btn active" id="filter-all">
+                        <i class="fas fa-list"></i> <span>All Tasks</span>
+                    </button>
+                    <button class="filter-btn" id="filter-pending">
+                        <i class="fas fa-clock"></i> <span>Pending</span>
+                    </button>
+                    <button class="filter-btn completed" id="filter-completed">
+                        <i class="fas fa-check-circle"></i> <span>Completed</span>
+                    </button>
+                    <button class="filter-btn high" id="filter-high">
+                        <i class="fas fa-exclamation-circle"></i> <span>High Priority</span>
+                    </button>
+                </div>
+                
+                <div class="task-list" id="task-list">
+                    <!-- Tasks will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- SEO Content Section -->
+        <div class="seo-content">
+            <h2>Boost Your Productivity with ChronoTask</h2>
+            <p>ChronoTask is the ultimate productivity app that combines task management with time tracking to help you achieve more every day. Whether you're a student, professional, or entrepreneur, our beautiful timer task manager will transform how you work.</p>
+            
+            <div class="feature-highlight">
+                <h3>Why Choose ChronoTask?</h3>
+                <p>Our unique combination of features sets us apart from other productivity tools:</p>
+            </div>
+            
+            <ul>
+                <li><strong>Beautiful Timer Display:</strong> Track your work sessions with our elegant timer integrated into the title bar</li>
+                <li><strong>Task Management:</strong> Create, organize, and prioritize tasks with our intuitive interface</li>
+                <li><strong>Alarm System:</strong> Set custom alarms with different sounds for important reminders</li>
+                <li><strong>Offline Capability:</strong> Access and manage your tasks even without internet connection</li>
+                <li><strong>Time Tracking:</strong> Measure how long you spend on different tasks and projects</li>
+                <li><strong>Dark/Light Themes:</strong> Switch between themes based on your preference and environment</li>
+            </ul>
+            
+            <p>ChronoTask is designed based on proven productivity techniques like the Pomodoro method, helping you maintain focus while preventing burnout. The beautiful interface makes it a joy to use, encouraging consistent productivity habits.</p>
+            
+            <h3>How to Maximize Your Productivity</h3>
+            <p>To get the most out of ChronoTask:</p>
+            <ol>
+                <li>Start by adding all your tasks for the day</li>
+                <li>Set priorities and categorize them</li>
+                <li>Use the timer for focused work sessions (25-50 minutes)</li>
+                <li>Take short breaks between sessions</li>
+                <li>Set alarms for important deadlines</li>
+                <li>Review your completed tasks at the end of the day</li>
+            </ol>
+            
+            <p>With ChronoTask, you'll find yourself accomplishing more in less time, reducing stress, and achieving a better work-life balance. Start your journey to peak productivity today!</p>
+        </div>
+        
+        <footer>
+            <p>© <span id="copyright-year"></span> ChronoTask | Beautiful Timer Task Manager | Made with <i class="fas fa-heart" style="color: #e74c3c;"></i></p>
+        </footer>
+    </div>
+
+    <audio id="alarm-sound-bell" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="alarm-sound-chime" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-chime-1933.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="alarm-sound-beep" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-991.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="alarm-sound-notification" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+<script src="script.js"></script>
+
+<script>
+        // Service worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
