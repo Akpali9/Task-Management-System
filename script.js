@@ -11,6 +11,7 @@
         let timerRunning = false;
         let timerValue = 0;
 
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Set copyright year
